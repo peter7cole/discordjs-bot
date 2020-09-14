@@ -1,15 +1,17 @@
 {
-  "name": "discordjs-bot",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "jest"
-  },
-  "author": "Peter Cole",
-  "license": "MIT",
-  "dependencies": {
-    "discord.js": "^12.3.1",
-    "dotenv": "^8.2.0"
-  }
+	"name": "discordjs-bot",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "jest",
+		"start": "node ./src/bot.js",
+		"dev": "nodemon ./src/bot.js"
+	},
+	"author": "Peter Cole",
+	"license": "MIT",
+	"dependencies": {
+		"discord.js": "^12.3.1",
+		"dotenv": "^8.2.0"
+	}
 }
