@@ -43,6 +43,7 @@ client.on('message', message => {
 				if (args.length === 0) return message.reply('please provide an ID');
 				if (member !== undefined) {
 					member
+						// methods like .kick() will return a promise, always handle errors
 						.kick()
 						.then(member => message.channel.send(`Kicked the user ${member}`))
 						.catch(err => message.reply('I cannot kick that user'));
