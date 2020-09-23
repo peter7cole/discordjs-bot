@@ -1,7 +1,7 @@
 # DiscordJS Bot Tutorial
 
 **Author** Peter Cole  
-**Version** 1.0.1
+**Version** 1.0.2
 
 ## Overview
 
@@ -10,7 +10,11 @@
 
 ## Version Progress
 
-- **1.0.1** Implemented Kick and Ban commands with the `$` prefix
+- **1.0.1**
+  - Implemented Kick and Ban commands with the `$` prefix
+- **1.0.2**
+  - Implemented role management via reactions with use of Partials,
+  - Implemented an Announce command with `@` functionality
 
 ## Dependencies
 

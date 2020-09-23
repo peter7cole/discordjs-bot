@@ -4,11 +4,19 @@ require('dotenv').config();
 // demonstrate accessing env variable
 // console.log(process.env.DISCORDJS_BOT_TOKEN);
 
-// import class from discord.js
-const { Client } = require('discord.js');
+// import classes from discord.js
+const { Client, WebhookClient } = require('discord.js');
 
 // create client object which is an instance of the Client class
-const client = new Client();
+// partials are a discordjs concept that allow you to handle uncached data, allows you to use the event itself
+const client = new Client({
+	partials: ['MESSAGE', 'REACTION'],
+});
+// WebhookClient
+const webhookClient = new WebhookClient(
+	process.env.WEBHOOK_ID,
+	process.env.WEBHOOK_TOKEN
+);
 // denotes dollar symbol as command prefix in Discord chat
 const PREFIX = '$';
 
@@ -30,7 +38,7 @@ client.on('message', message => {
 			.substring(PREFIX.length)
 			.split(/\s+/);
 		// protect against invalid commands
-		const SAFE_COMMANDS = ['kick', 'ban'];
+		const SAFE_COMMANDS = ['kick', 'ban', 'announce'];
 		if (!SAFE_COMMANDS.includes(CMD_NAME))
 			return message.reply(`"${CMD_NAME}" is an invalid command`);
 		// pull the member's ID from the existing guild registry
@@ -54,14 +62,72 @@ client.on('message', message => {
 			case 'ban':
 				// protect against valid commands with empty arguments
 				if (args.length === 0) return message.reply('please provide an ID');
+				if (!message.member.hasPermission('BAN_MEMBERS'))
+					return message.reply(
+						'You do not have permission to use that command'
+					);
 				if (member !== undefined) {
 					member
 						.ban()
 						.then(member => message.channel.send(`Banned the user ${member}`))
-						.catch(err => message.reply('I cannot ban that user'));
+						.catch(err => {
+							message.reply('I cannot ban that user');
+						});
 				} else {
 					message.channel.send('That member was not found');
 				}
+				break;
+			case 'announce':
+				const msg = args.join(' ');
+				webhookClient.send(msg);
+				break;
+			default:
+				break;
+		}
+	}
+});
+
+// adding roles via reactions in an uncached message
+client.on('messageReactionAdd', (reaction, user) => {
+	const { name } = reaction.emoji;
+	const member = reaction.message.guild.members.cache.get(user.id);
+	if (reaction.message.id === '758200887725522975') {
+		switch (name) {
+			case '🍎': // Javascript
+				member.roles.add('758202340955652096');
+				break;
+			case '🍌': // Python
+				member.roles.add('758202583587487775');
+				break;
+			case '🍇': // C#
+				member.roles.add('758202534534840326');
+				break;
+			case '🍑': // Java
+				member.roles.add('758202445628964864');
+				break;
+			default:
+				break;
+		}
+	}
+});
+
+// removing roles
+client.on('messageReactionRemove', (reaction, user) => {
+	const { name } = reaction.emoji;
+	const member = reaction.message.guild.members.cache.get(user.id);
+	if (reaction.message.id === '758200887725522975') {
+		switch (name) {
+			case '🍎': // Javascript
+				member.roles.remove('758202340955652096');
+				break;
+			case '🍌': // Python
+				member.roles.remove('758202583587487775');
+				break;
+			case '🍇': // C#
+				member.roles.remove('758202534534840326');
+				break;
+			case '🍑': // Java
+				member.roles.remove('758202445628964864');
 				break;
 			default:
 				break;
